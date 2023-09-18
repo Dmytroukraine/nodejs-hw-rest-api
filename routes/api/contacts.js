@@ -61,7 +61,7 @@ router.get('/:contactId', async (req, res, next) => {
   const contact = await contacts.getContactById(contactId)
 
   if (contact === null) {
-    return res.status(404).json({ message: "Not found" });
+    return res.status(404).json({ message: "Нічого не знайдено" });
   }
 
   res.json({
@@ -78,7 +78,7 @@ router.post('/', async (req, res, next) => {
   const { error, value } = schemaCreateContacts.validate({ name, phone, email })
 
   if (error) {
-    return res.status(400).json({ message: "missing required name field" });
+    return res.status(400).json({ message: "Відсутнє обов’язкове поле імені" });
   }
 
   const addContact = await contacts.addContact(value)
@@ -97,12 +97,12 @@ router.delete('/:contactId', async (req, res, next) => {
 
   const deleteContact = await contacts.removeContact(contactId)
   if (deleteContact === null) {
-    return res.status(404).json({ message: "Not found" });
+    return res.status(404).json({ message: "Нічого не знайдено" });
   }
 
   res.json({
     code: 200,
-    message: "contact deleted"
+    message: "Контакт видалений"
   })
 })
 
@@ -112,13 +112,13 @@ router.put('/:contactId', async (req, res, next) => {
   const { error, value } = schemaUpdateContacts.validate({ name, phone, email })
 
   if (error) {
-    return res.status(400).json({ message: "missing fields" });
+    return res.status(400).json({ message: "Відсутні поля" });
   }
 
   const updContact = await contacts.updateContact(contactId, value)
 
   if (updContact === null) {
-    return res.status(404).json({ message: "Not found" });
+    return res.status(404).json({ message: "Нічого не знайдено" });
   }
 
   res.json({
