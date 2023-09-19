@@ -1,133 +1,48 @@
-// const express = require('express')
+const express = require("express");
+const Joi = require("joi"); 
+const router = express.Router();
 
-// const router = express.Router()
-
-// router.get('/', async (req, res, next) => {
-//   res.json({ message: 'hw-02' })
-// })
-
-// router.get('/:contactId', async (req, res, next) => {
-//   res.json({ message: 'template message' })
-// })
-
-// router.post('/', async (req, res, next) => {
-//   res.json({ message: 'template message' })
-// })
-
-// router.delete('/:contactId', async (req, res, next) => {
-//   res.json({ message: 'template message' })
-// })
-
-// router.put('/:contactId', async (req, res, next) => {
-//   res.json({ message: 'template message' })
-// })
-
-// module.exports = router
-
-
-const express = require('express')
-const contacts = require('../../models/contacts')
-const Joi = require("joi");
-
-const router = express.Router()
-
-const schemaCreateContacts = Joi.object({
+const contactSchema = Joi.object({
   name: Joi.string().required(),
-  email: Joi.string().required(),
+  email: Joi.string().email().required(),
   phone: Joi.string().required(),
-})
+});
 
-const schemaUpdateContacts = Joi.object({
-  name: Joi.string(),
-  email: Joi.string(),
-  phone: Joi.string(),
-})
-  .or("name", "email", "phone")
+router.get("/", async (req, res, next) => {
+});
 
-router.get('/', async (req, res, next) => {
-  const contactList = await contacts.listContacts()
+router.get("/:contactId", async (req, res, next) => {
+});
 
-  res.json({
-    status: 'success',
-    code: 200,
-    data: {
-      contactList
-    },
-  })
-})
+router.post("/", async (req, res, next) => {
+  try {
+    const { error } = contactSchema.validate(req.body);
 
-router.get('/:contactId', async (req, res, next) => {
-  const { contactId } = req.params;
-  const contact = await contacts.getContactById(contactId)
+    if (error) {
+      return res.status(400).json({ message: error.details[0].message });
+    }
 
-  if (contact === null) {
-    return res.status(404).json({ message: "Нічого не знайдено" });
+    res.json({ message: "Contact added successfully" });
+  } catch (error) {
+    next(error);
   }
+});
 
-  res.json({
-    status: 'success',
-    code: 200,
-    data: {
-      contact
-    },
-  })
-})
+router.delete("/:contactId", async (req, res, next) => {
+});
 
-router.post('/', async (req, res, next) => {
-  const { name, phone, email } = req.body;
-  const { error, value } = schemaCreateContacts.validate({ name, phone, email })
+router.put("/:contactId", async (req, res, next) => {
+  try {
+    const { error } = contactSchema.validate(req.body);
 
-  if (error) {
-    return res.status(400).json({ message: "Відсутнє обов’язкове поле імені" });
+    if (error) {
+      return res.status(400).json({ message: error.details[0].message });
+    }
+
+    res.json({ message: "Contact updated successfully" });
+  } catch (error) {
+    next(error);
   }
+});
 
-  const addContact = await contacts.addContact(value)
-
-  res.json({
-    status: 'success',
-    code: 201,
-    data: {
-      addContact
-    },
-  })
-})
-
-router.delete('/:contactId', async (req, res, next) => {
-  const { contactId } = req.params;
-
-  const deleteContact = await contacts.removeContact(contactId)
-  if (deleteContact === null) {
-    return res.status(404).json({ message: "Нічого не знайдено" });
-  }
-
-  res.json({
-    code: 200,
-    message: "Контакт видалений"
-  })
-})
-
-router.put('/:contactId', async (req, res, next) => {
-  const { contactId } = req.params;
-  const { name, phone, email } = req.body;
-  const { error, value } = schemaUpdateContacts.validate({ name, phone, email })
-
-  if (error) {
-    return res.status(400).json({ message: "Відсутні поля" });
-  }
-
-  const updContact = await contacts.updateContact(contactId, value)
-
-  if (updContact === null) {
-    return res.status(404).json({ message: "Нічого не знайдено" });
-  }
-
-  res.json({
-    status: 'success',
-    code: 200,
-    data: {
-      updContact
-    },
-  })
-})
-
-module.exports = router
+module.exports = router;
