@@ -64,5 +64,11 @@
     "name": "Bladesmith",
     "email": "marvel@hero.ca",
     "phone": "(294) 840-6685"
+  },
+  {
+    "id": "c9d75270-1455-42bc-af8a-c0e85aca3fab",
+    "name": "Forged in Fire",
+    "email": "fire@steel.ca",
+    "phone": "(294) 840-7785"
   }
 ]
