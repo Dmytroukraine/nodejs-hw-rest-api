@@ -2,7 +2,8 @@ const { User } = require("../models/user");
 const bcrypt = require("bcrypt");
 const gravatar = require("gravatar");
 const path = require("path");
-const { nanoid } = require("nanoid");
+// const { nanoid } = require("nanoid");
+const { v4: uuidv4 } = require("uuid");
 const Jimp = require("jimp");
 const { HttpError, ctrlWrapper, sendEmail } = require("../helpers");
 const jwt = require("jsonwebtoken");
@@ -19,7 +20,7 @@ const register = async (req, res) => {
   }
   const hashPassword = await bcrypt.hash(password, 10);
   const avatarURL = gravatar.url(email);
-  const verificationCode = nanoid();
+  const verificationCode = uuidv4();
 
   const newUser = await User.create({
     ...req.body,
